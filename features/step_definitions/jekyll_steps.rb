@@ -32,6 +32,14 @@ Given /^I have an? "(.*)" file that contains "(.*)"$/ do |file, text|
   end
 end
 
+Given /^I have an? "(.*)" file that also contains "(.*)"$/ do |file, text|
+  File.open(file, 'a') do |f|
+    f.write("\n")
+    f.write(text)
+    f.close
+  end
+end
+
 Given /^I have a (.*) layout that contains "(.*)"$/ do |layout, text|
   File.open(File.join('_layouts', layout + '.html'), 'w') do |f|
     f.write(text)

@@ -1,0 +1,13 @@
+---
+layout: default
+title: Partial Include
+---
+
+Here is the interesting line:
+
+{% extract helloworld.c %}
+  {% after //Here is the interesting line %}
+  {% before //The rest is boilerplate code %}
+{% endextract %}
+
+This is cooler.

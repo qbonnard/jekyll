@@ -376,6 +376,14 @@ class TestPost < Test::Unit::TestCase
           assert_equal "<<< <hr />\n<p>Tom Preston-Werner github.com/mojombo</p>\n\n<p>This <em>is</em> cool</p> >>>", post.output
         end
 
+        should "extract templates" do
+          post = setup_post("2011-11-24-extract.markdown")
+          post.site.source = File.join(File.dirname(__FILE__), 'source')
+          do_render(post)
+
+          assert_equal "<<< <p>Here is the interesting line:</p>\n\n<pre><code>printf(&quot;Hello world!\\n&quot;);</code></pre>\n\n<p>This is cooler.</p> >>>", post.output
+        end
+
         should "render date specified in front matter properly" do
           post = setup_post("2010-01-09-date-override.textile")
           do_render(post)
