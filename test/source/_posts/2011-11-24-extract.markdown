@@ -3,11 +3,11 @@ layout: default
 title: Partial Include
 ---
 
-Here is the interesting line:
-
+Here are the interesting lines:
+```
 {% extract helloworld.c %}
   {% after //Here is the interesting line %}
   {% before //The rest is boilerplate code %}
-{% endextract %}
+{% endextract %}```
 
 This is cooler.

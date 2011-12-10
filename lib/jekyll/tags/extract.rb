@@ -3,14 +3,13 @@ module Jekyll
   class ExtractTag < Liquid::Block
 
     def unknown_tag(name, content, tokens)
-      if name == "after"
+      case name
+      when "after"
         @after = content.strip
+      when "before"
+        @before = content.strip
       else
-        if name == "before"
-          @before = content.strip
-        else
-          super
-        end
+        super
       end
     end
 
@@ -39,22 +38,13 @@ module Jekyll
           return "{% before _line_ %} missing in {% extract %} block."
         end
         if choices.include?(@file)
-          source = File.readlines(@file)
-          $first_line_index = 0
-          until $first_line_index >= source.size or source[$first_line_index].include? @after do 
-            $first_line_index += 1
-          end
-          $first_line_index += 1
-          $last_line_index = $first_line_index
-          until $last_line_index >= source.size or source[$last_line_index].include? @before do 
-            $last_line_index += 1
-          end
-          $last_line_index -= 1
-          if 0 < $first_line_index and $first_line_index <= $last_line_index and $last_line_index < source.size-1
-            partial = Liquid::Template.parse(source[$first_line_index..$last_line_index].join("\n"))
-          else
+          source = File.read(@file)
+          matchdata = source.match /#{Regexp.escape(@after)}[^\n]*\n(.*)\n.*#{Regexp.escape(@before)}/m
+          if matchdata.nil? or matchdata.size < 2
             return "Unable to determine which lines of '#{@file}' are between '#{@after}' and '#{@before}'"
           end
+          source = matchdata[1]
+          partial = Liquid::Template.parse(source)
           context.stack do
             partial.render(context)
           end
